@@ -119,9 +119,10 @@ class CombinedBCPD(BayesianCoherentPointDrift):
         sigma_mat_inv = lmd * gmat_inv + s2s2 * np.diag(nu)
         sigma_mat = np.linalg.inv(sigma_mat_inv)
         residual = rigid_trans.inverse().transform(x_hat) - source
-        v_hat = s2s2 * np.matmul(np.multiply(np.kron(sigma_mat, np.identity(dim)),
-                                             np.kron(nu, np.ones(dim))),
-                                 residual.ravel()).reshape(-1, dim)
+        v_hat = np.zeros_like(source)
+        # v_hat = s2s2 * np.matmul(np.multiply(np.kron(sigma_mat, np.identity(dim)),
+        #                                      np.kron(nu, np.ones(dim))),
+        #                          residual.ravel()).reshape(-1, dim)
         u_hat = source + v_hat
         alpha = np.exp(spsp.psi(k + nu) - spsp.psi(k * m + n_p))
         x_m = np.sum(nu * x_hat.T, axis=1) / n_p
