@@ -2,7 +2,7 @@ name: Ubuntu CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, feature/deploy-package ]
     tags: ['v*']
   pull_request:
     branches: [ master ]
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
     steps:
     - name: Checkout source code
       uses: actions/checkout@v2
@@ -34,3 +34,11 @@ jobs:
       run: make setup
     - name: Test
       run: make test
+    - name: Upload to remote repo
+      env:
+        REPO_URL: ${{ secrets.PYPI_CUSTOM_URL }}
+        POETRY_HTTP_BASIC_PYPI_USERNAME: ${{ secrets.PYPI_USER }}
+        POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.PYPI_PASS }}
+      run: 
+        poetry config repositories.custom ${REPO_URL}
+        poetry publish -r custom --dry-run
