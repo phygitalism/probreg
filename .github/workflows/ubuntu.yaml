@@ -38,7 +38,7 @@ jobs:
         path: |
           ~/.cache/pypoetry
           .venv
-        key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+        key: poetry-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml') }}
 
     - name: Poetry update 
       run: poetry self update
@@ -47,21 +47,20 @@ jobs:
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: |
         poetry install --no-interaction
-        poetry install twine
     
-    - name: Build and install package
-      run: |
-        poetry run python ./setup.py bdist_wheel
-        poetry run pip install ./dist/*.whl
+    # - name: Build and install package
+    #   run: |
+    #     poetry run python ./setup.py bdist_wheel
+    #     rm -r ./probreg
+    #     poetry run pip install ./dist/*.whl
 
-    - name: Test
-      run: make test
+    # - name: Test
+    #   run: poetry run python -m unittest discover
 
     # - name: Upload to remote repo
     #   env:
-    #     REPO_URL: ${{ secrets.PYPI_CUSTOM_URL }}
-    #     POETRY_HTTP_BASIC_PYPI_USERNAME: ${{ secrets.PYPI_USER }}
-    #     POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.PYPI_PASS }}
+    #     TWINE_REPOSITORY_URL : ${{ secrets.PYPI_CUSTOM_URL }}
+    #     TWINE_USERNAME : ${{ secrets.PYPI_USER }}
+    #     TWINE_PASSWORD : ${{ secrets.PYPI_PASS }}
     #   run: |
-    #     poetry config repositories.custom ${REPO_URL}
-    #     poetry publish -r custom --dry-run
+    #     poetry run twine upload --non-interactive --verbose ./dist/*
