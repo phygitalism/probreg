@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y curl
+        sudo apt-get install -y curl libomp-dev
     - name: Install poetry
       run: |
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
@@ -39,6 +39,6 @@ jobs:
         REPO_URL: ${{ secrets.PYPI_CUSTOM_URL }}
         POETRY_HTTP_BASIC_PYPI_USERNAME: ${{ secrets.PYPI_USER }}
         POETRY_HTTP_BASIC_PYPI_PASSWORD: ${{ secrets.PYPI_PASS }}
-      run: 
+      run: |
         poetry config repositories.custom ${REPO_URL}
         poetry publish -r custom --dry-run
