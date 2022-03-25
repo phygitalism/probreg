@@ -46,21 +46,21 @@ jobs:
     - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: |
-        poetry install --no-interaction
+        poetry install --no-interaction --no-root
     
-    # - name: Build and install package
-    #   run: |
-    #     poetry run python ./setup.py bdist_wheel
-    #     rm -r ./probreg
-    #     poetry run pip install ./dist/*.whl
+    - name: Build and install package
+      run: |
+        poetry run python ./setup.py bdist_wheel
+        rm -r ./probreg
+        poetry run pip install ./dist/*.whl
 
-    # - name: Test
-    #   run: poetry run python -m unittest discover
+    - name: Test
+      run: poetry run python -m unittest discover
 
-    # - name: Upload to remote repo
-    #   env:
-    #     TWINE_REPOSITORY_URL : ${{ secrets.PYPI_CUSTOM_URL }}
-    #     TWINE_USERNAME : ${{ secrets.PYPI_USER }}
-    #     TWINE_PASSWORD : ${{ secrets.PYPI_PASS }}
-    #   run: |
-    #     poetry run twine upload --non-interactive --verbose ./dist/*
+    - name: Upload to remote repo
+      env:
+        TWINE_REPOSITORY_URL : ${{ secrets.PYPI_CUSTOM_URL }}
+        TWINE_USERNAME : ${{ secrets.PYPI_USER }}
+        TWINE_PASSWORD : ${{ secrets.PYPI_PASS }}
+      run: |
+        poetry run twine upload --non-interactive --verbose ./dist/*
